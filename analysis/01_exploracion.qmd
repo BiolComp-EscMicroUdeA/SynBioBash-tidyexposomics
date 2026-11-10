@@ -1,0 +1,25 @@
+---
+title: "01 - Exploración Inicial y Calidad de Datos"
+author: "Sebastián Toro"
+format:
+  html:
+    toc: true
+    code-fold: show
+    embed-resources: true
+editor: source
+---
+
+## Introducción
+
+Este documento presenta la exploración inicial de los datos de exposición y transcriptómica antes de la integración con `tidyexposomics`.
+
+```{r setup, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## Estructura de las Muestras
+
+```{r}
+# Código exploratorio
+```
+

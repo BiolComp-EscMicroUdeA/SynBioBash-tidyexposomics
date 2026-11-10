@@ -1,0 +1,38 @@
+# Historial y datos de sesión de R
+.Rhistory
+.RData
+.RDataTmp
+.Ruserdata
+
+# Configuración local de RStudio
+.Rproj.user/
+
+# Librería local de paquetes de renv (las dependencias se reproducen mediante renv.lock)
+renv/library/
+renv/python/
+renv/staging/
+renv/local/
+
+# Datos crudos y procesados pesados/privados
+data/raw/*
+!data/raw/README.md
+data/processed/*
+!data/processed/.gitkeep
+
+# Resultados y reportes voluminosos temporales
+results/figures/*
+!results/figures/.gitkeep
+results/tables/*
+!results/tables/.gitkeep
+results/reports/*
+!results/reports/.gitkeep
+
+# Quarto / RMarkdown cache y salidas intermedias
+*_cache/
+*_files/
+.quarto/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
