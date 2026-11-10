@@ -21,9 +21,6 @@ tidyexposomics-pruebas/
 │   ├── 02_preparar_datos.R         # Curación y construcción de contenedores (MultiAssayExperiment)
 │   ├── 03_probar_tidyexposomics.R  # Pruebas de las funciones clave de tidyexposomics
 │   └── 04_validar_resultados.R     # Validación y comparación de salidas
-├── analysis/
-│   ├── 01_exploracion.qmd          # Documento dinámico con análisis exploratorio (Quarto)
-│   └── 02_ejemplo_uso.qmd          # Viñeta / caso de uso reproducible paso a paso (Quarto)
 ├── results/
 │   ├── figures/                    # Figuras y gráficos generados
 │   ├── tables/                     # Tablas de resultados (CSV/TSV)
