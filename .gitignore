@@ -36,3 +36,5 @@ results/reports/*
 .DS_Store
 Thumbs.db
 
+# Otras cosas
+preguntas_PI_proyecto.md

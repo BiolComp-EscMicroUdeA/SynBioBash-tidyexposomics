@@ -1,6 +1,9 @@
 source("renv/activate.R")
 
-# Configurar repositorios para Bioconductor y CRAN de forma transparente en renv
+# Configurar repositorios para Bioconductor y CRAN si hay conectividad
 if (requireNamespace("BiocManager", quietly = TRUE)) {
-  options(repos = BiocManager::repositories())
+  tryCatch(
+    options(repos = BiocManager::repositories()),
+    error = function(e) NULL
+  )
 }
