@@ -3,7 +3,7 @@
 # Propósito: Validar consistencia, métricas estadísticas y exportar resultados.
 # ==============================================================================
 
-library(tidyverse)
+
 
 message(">>> Validando resultados y exportando figuras y tablas...")
 

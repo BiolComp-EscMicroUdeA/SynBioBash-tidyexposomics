@@ -5,93 +5,249 @@
 #           dimensiones y missing values.
 # ==============================================================================
 
-library(tidyexposomics)
-library(dplyr)
 
-# 1. Definir rutas
-raw_dir  <- "data/raw"
-rdata_path <- list.files(raw_dir, pattern = "\\.RData$", full.names = TRUE)[1]
+# ------------------------------------------------------------
+# 1. CONFIGURATION
+# ------------------------------------------------------------
 
-if (is.na(rdata_path)) {
-  stop(
-    "No se encontró ningún archivo .RData en 'data/raw/'.\n",
-    "Ubica el archivo descargado de Zenodo allí."
+# Project directories
+data_dir <- file.path("data", "raw")
+tables_results_dir <- "results/tables"
+
+# Expected datasets
+expected_files <- c(
+  "annotated_cb.RData",
+  "expom_1.RData",
+  "fdata.RData",
+  "hca_lung.RData",
+  "meta.RData",
+  "omics_list.RData"
+)
+
+# Create results directory if it does not exist
+dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
+
+# Check available files
+available_files <- list.files(
+  data_dir,
+  pattern = "\\.RData$",
+  full.names = FALSE
+)
+
+missing_files <- setdiff(expected_files, available_files)
+
+if (length(missing_files) > 0) {
+  warning(
+    "Missing expected files: ",
+    paste(missing_files, collapse = ", ")
   )
 }
 
-message(paste("Cargando archivo:", rdata_path))
+files_to_inspect <- intersect(expected_files, available_files)
 
-# 2. Cargar .RData en un entorno aislado para no contaminar el global
-env_data <- new.env()
-loaded_objects <- load(rdata_path, envir = env_data)
+if (length(files_to_inspect) == 0) {
+  stop("No expected RData files were found in data/raw/.")
+}
 
-message("Objetos encontrados en el .RData:")
-print(loaded_objects)
-
-#######
-# 1. Extraer el objeto del entorno aislado
-cb_obj <- get("annotated_cb", envir = env_data)
-
-# 2. Verificar su clase y dimensiones
-class(cb_obj)
-dim(cb_obj)
-
-# 3. Inspeccionar nombres de columnas y estructura de variables
-colnames(cb_obj)
-head(cb_obj)
-
-################
+cat("Files to inspect:", length(files_to_inspect), "\n")
 
 
+# ------------------------------------------------------------
+# 2. HELPER FUNCTIONS
+# ------------------------------------------------------------
 
-
-# 3. Extraer metadatos de cada objeto cargado
-inspeccion_df <- purrr::map_df(loaded_objects, function(obj_name) {
-  obj <- get(obj_name, envir = env_data)
-
-  # Determinar dimensiones
-  dims <- if (is.data.frame(obj) || is.matrix(obj)) {
-    paste(dim(obj), collapse = " x ")
-  } else if (
-    inherits(obj, "ExposomeSet") || inherits(obj, "MultiAssayExperiment")
-  ) {
-    paste(dim(obj), collapse = " x ")
-  } else {
-    paste("Longitud:", length(obj))
-  }
-
-  # Calcular porcentaje de NA si es data frame o matriz
-  pct_na <- if (is.data.frame(obj) || is.matrix(obj)) {
-    round(mean(is.na(obj)) * 100, 2)
-  } else {
-    NA
-  }
-
-  tibble(
-    Objeto = obj_name,
-    Clase = paste(class(obj), collapse = ", "),
-    Dimensiones = dims,
-    Porcentaje_NA = pct_na
+# Safely extract object dimensions
+get_dimensions <- function(x) {
+  dimensions <- tryCatch(
+    dim(x),
+    error = function(e) NULL
   )
-})
 
-# 4. Mostrar resumen en consola
-print(inspeccion_df)
+  if (is.null(dimensions)) {
+    return(NA_character_)
+  }
 
-# 5. Guardar tabla de inspección
-out_table <- "results/tables/resumen_inspeccion.csv"
-write_csv(inspeccion_df, out_table)
-message(paste("Resumen guardado exitosamente en:", out_table))
-
-# 6. Inspección detallada si existen tablas independientes de exposoma
-if ("codebook" %in% loaded_objects) {
-  cb <- get("codebook", envir = env_data)
-  message("\n--- Vista previa del Codebook ---")
-  print(head(cb))
+  paste(dimensions, collapse = " x ")
 }
 
-if ("exposures" %in% loaded_objects) {
-  exp_df <- get("exposures", envir = env_data)
-  message("\n--- Vista previa de Exposiciones (Primeras 5 columnas) ---")
-  print(head(exp_df[, 1:min(5, ncol(exp_df))]))
+
+# Generate a short preview of names
+preview_names <- function(x, max_items = 10) {
+  object_names <- tryCatch(
+    names(x),
+    error = function(e) NULL
+  )
+
+  if (is.null(object_names)) {
+    return(NA_character_)
+  }
+
+  if (length(object_names) == 0) {
+    return(NA_character_)
+  }
+
+  preview <- head(object_names, max_items)
+
+  result <- paste(preview, collapse = ", ")
+
+  if (length(object_names) > max_items) {
+    result <- paste0(result, ", ...")
+  }
+
+  result
 }
+
+
+# ------------------------------------------------------------
+# 3. INSPECTION
+# ------------------------------------------------------------
+
+inventory <- list()
+structure_report <- c(
+  "TIDYEXPOSOMICS DATA INSPECTION",
+  "================================",
+  ""
+)
+
+for (file_name in files_to_inspect) {
+  file_path <- file.path(data_dir, file_name)
+
+  cat("\nInspecting:", file_name, "\n")
+
+  # Create an isolated environment for each file
+  object_env <- new.env()
+
+  # Load objects without polluting the global environment
+  loaded_objects <- load(
+    file_path,
+    envir = object_env
+  )
+
+  structure_report <- c(
+    structure_report,
+    "",
+    "----------------------------------------",
+    paste("FILE:", file_name),
+    "----------------------------------------",
+    paste("Objects found:", length(loaded_objects)),
+    ""
+  )
+
+  # Inspect every object within the file
+  for (object_name in loaded_objects) {
+    object <- get(
+      object_name,
+      envir = object_env,
+      inherits = FALSE
+    )
+
+    object_class <- paste(class(object), collapse = ", ")
+
+    object_type <- typeof(object)
+
+    object_dimensions <- get_dimensions(object)
+
+    object_length <- length(object)
+
+    object_names <- preview_names(object)
+
+    # Extract column names when applicable
+    column_names <- if (is.data.frame(object)) {
+      preview_names(object)
+    } else {
+      NA_character_
+    }
+
+    # Store inventory information
+    inventory[[length(inventory) + 1]] <- data.frame(
+      file = file_name,
+      object = object_name,
+      class = object_class,
+      type = object_type,
+      dimensions = object_dimensions,
+      length = object_length,
+      names_preview = object_names,
+      columns_preview = column_names,
+      stringsAsFactors = FALSE
+    )
+
+    # Print a summary to the console
+    cat("  Object:", object_name, "\n")
+    cat("  Class:", object_class, "\n")
+    cat("  Type:", object_type, "\n")
+    cat("  Dimensions:", object_dimensions, "\n")
+
+    # Capture a compact structural representation
+    object_structure <- utils::capture.output(
+      utils::str(
+        object,
+        max.level = 2,
+        list.len = 10,
+        vec.len = 6,
+        give.attr = FALSE
+      )
+    )
+
+    # Add information to the report
+    structure_report <- c(
+      structure_report,
+      paste("OBJECT:", object_name),
+      paste("Class:", object_class),
+      paste("Type:", object_type),
+      paste("Dimensions:", object_dimensions),
+      paste("Length:", object_length),
+      "Structure:",
+      object_structure,
+      ""
+    )
+  }
+
+  # Release memory before loading the next file
+  rm(object_env)
+  invisible(gc())
+}
+
+
+# ------------------------------------------------------------
+# 4. EXPORT RESULTS
+# ------------------------------------------------------------
+
+# Combine individual records into one data frame
+data_inventory <- do.call(
+  rbind,
+  inventory
+)
+
+# Export inventory
+utils::write.csv(
+  data_inventory,
+  file = file.path(tables_results_dir, "01_data_inventory.csv"),
+  row.names = FALSE,
+  na = ""
+)
+
+# Export structural report
+writeLines(
+  structure_report,
+  con = file.path(tables_results_dir, "01_structure_report.txt"),
+  useBytes = TRUE
+)
+
+
+# ------------------------------------------------------------
+# 5. FINAL SUMMARY
+# ------------------------------------------------------------
+
+cat("\n========================================\n")
+cat("INSPECTION COMPLETED\n")
+cat("========================================\n")
+
+cat("Files inspected:", length(files_to_inspect), "\n")
+cat("Objects identified:", nrow(data_inventory), "\n")
+
+cat("\nInventory:\n")
+print(data_inventory)
+
+cat("\nGenerated files:\n")
+cat("- results/01_data_inventory.csv\n")
+cat("- results/01_structure_report.txt\n")
