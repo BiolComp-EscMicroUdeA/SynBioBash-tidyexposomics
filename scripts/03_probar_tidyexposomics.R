@@ -3,7 +3,7 @@
 # Propósito: Evaluar y diseccionar las funciones principales de tidyexposomics.
 # ==============================================================================
 
-library(tidyverse)
+
 # library(tidyexposomics)
 
 message(">>> Probando funciones principales de tidyexposomics...")

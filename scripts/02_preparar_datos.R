@@ -4,7 +4,7 @@
 # (p. ej. MultiAssayExperiment / SummarizedExperiment) para tidyexposomics.
 # ==============================================================================
 
-library(tidyverse)
+
 
 message(">>> Preparando y estructurando los datos...")
 
