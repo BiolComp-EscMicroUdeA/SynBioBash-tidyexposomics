@@ -1,13 +1,18 @@
-# Datos Crudos (Raw Data)
+# tidyexposomics Data Bundle
 
-Esta carpeta contiene los datos de entrada originales e inmutables. 
+Este directorio contiene archivos descargados desde el repositorio de Zenodo asociado al paquete **tidyexposomics**:
 
-> **Regla de oro de reproducibilidad:** Los archivos en este directorio **nunca deben modificarse manualmente**. Todo procesamiento debe realizarse mediante scripts reproducibles que guarden sus salidas en `data/processed/`.
+**Fuente:** https://zenodo.org/records/23841784
 
-## Archivos esperados
-- Datos de exposición (exposoma) en formatos tabulares (CSV, TSV).
-- Matrices de expresión génica / conteos transcriptómicos (o conjuntos de datos de prueba integrados).
-- Metadatos de muestras y covariables clínicas.
+## Archivos descargados
 
-*Nota: Por razones de privacidad y tamaño, los datos crudos no se suben al repositorio de control de versiones (ver `.gitignore`).*
+- `annotated_cb.RData`
+- `expom_1.RData`
+- `fdata.RData`
+- `hca_lung.RData`
+- `meta.RData`
+- `omics_list.RData`
 
+## Referencia
+
+BioNomad. *tidyexposomics Data Bundle*. Zenodo. Disponible en: https://zenodo.org/records/23841784
