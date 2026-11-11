@@ -1,0 +1,7 @@
+"file","object","class","type","dimensions","length","names_preview","columns_preview"
+"annotated_cb.RData","annotated_cb","spec_tbl_df, tbl_df, tbl, data.frame","list","98 x 12",12,"variable, period, location, description, var_type, transformation, selected_ontology_label, selected_ontology_id, root_id, root_label, ...","variable, period, location, description, var_type, transformation, selected_ontology_label, selected_ontology_id, root_id, root_label, ..."
+"expom_1.RData","expom_1","MultiAssayExperiment","S4",,3,"Gene Expression, Methylation, Metabolomics",
+"fdata.RData","fdata","list","list",,3,"Gene Expression, Methylation, Metabolomics",
+"hca_lung.RData","hca_lung","MultiAssayExperiment","S4",,11,"Macrophages, AT2, Basal, EC_venous, T_cell_lineage, Fibroblasts, Multiciliated_lineage, B_cell_lineage, Secretory, Monocytes, ...",
+"meta.RData","meta","data.frame","list","1301 x 241",241,"h_abs_ratio_preg_Log, h_no2_ratio_preg_Log, h_pm10_ratio_preg_None, h_pm25_ratio_preg_None, hs_no2_dy_hs_h_Log, hs_no2_wk_hs_h_Log, hs_no2_yr_hs_h_Log, hs_pm10_dy_hs_h_None, hs_pm10_wk_hs_h_None, hs_pm10_yr_hs_h_None, ...","h_abs_ratio_preg_Log, h_no2_ratio_preg_Log, h_pm10_ratio_preg_None, h_pm25_ratio_preg_None, hs_no2_dy_hs_h_Log, hs_no2_wk_hs_h_Log, hs_no2_yr_hs_h_Log, hs_pm10_dy_hs_h_None, hs_pm10_wk_hs_h_None, hs_pm10_yr_hs_h_None, ..."
+"omics_list.RData","omics_list","list","list",,3,"Gene Expression, Methylation, Metabolomics",
