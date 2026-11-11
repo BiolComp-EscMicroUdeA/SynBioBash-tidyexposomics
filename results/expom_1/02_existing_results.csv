@@ -1,0 +1,10 @@
+"result_type","available"
+"codebook",TRUE
+"quality_control",TRUE
+"correlation",TRUE
+"association",TRUE
+"mixture_analysis",FALSE
+"differential_analysis",TRUE
+"multiomics_integration",TRUE
+"network",TRUE
+"enrichment",TRUE
