@@ -1,0 +1,13 @@
+Fase,Funcion,Estado,Mensaje
+Tidy,pivot_sample,PASS,OK
+Tidy,pivot_feature,PASS,OK
+Tidy,pivot_exp,FAIL,"Sample order mismatch detected in assay: exposures
+Ensure the samples in colData are aligned with the assay samples."
+Viz,plot_association,PASS,OK
+Viz,plot_volcano,PASS,OK
+Viz,plot_factor_summary,PASS,OK
+Viz,run_and_plot_network,FAIL,"'arg' should be one of “degs”, “omics”, “factors”, “factor_features”, “exposures”, “degs_feature_cor”, “omics_feature_cor”, “factor_features_feature_cor”"
+Viz,plot_enrichment,FAIL,argument is of length zero
+Nuevos,run_pca + plot_pca,PASS,OK
+Nuevos,run_normality_check,PASS,OK
+Nuevos,run_impute_missing,PASS,OK
